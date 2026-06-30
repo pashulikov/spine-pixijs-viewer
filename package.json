@@ -8,9 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@esotericsoftware/spine-core": "^4.2.0",
-    "@esotericsoftware/spine-pixi-v8": "^4.2.0",
-    "pixi.js": "^8.0.0",
+    "@esotericsoftware/spine-core": "^4.3.0",
+    "@esotericsoftware/spine-pixi-v8": "^4.3.0",
+    "spine-core-42": "npm:@esotericsoftware/spine-core@4.2.119",
+    "spine-pixi-42": "npm:@esotericsoftware/spine-pixi-v8@4.2.119",
+    "pixi.js": "^8.16.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0"
   },

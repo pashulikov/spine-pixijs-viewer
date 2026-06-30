@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Application, Container } from 'pixi.js'
-import { Spine } from '@esotericsoftware/spine-pixi-v8'
-import type { SkeletonData } from '@esotericsoftware/spine-core'
+import { newSpine, applySkin } from '../utils/runtimes'
+import type { RuntimeVersion } from '../utils/runtimes'
 
 export interface SpineCanvasControls {
   setAnimation: (name: string, loop: boolean) => void
@@ -11,16 +11,17 @@ export interface SpineCanvasControls {
 }
 
 interface SpineCanvasProps {
-  skeletonData: SkeletonData | null
+  skeletonData: any | null
+  runtimeVersion: RuntimeVersion | null
   bgColor: string
   onReady: (controls: SpineCanvasControls) => void
 }
 
-export function SpineCanvas({ skeletonData, bgColor, onReady }: SpineCanvasProps) {
+export function SpineCanvas({ skeletonData, runtimeVersion, bgColor, onReady }: SpineCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   // appRef is set only AFTER init completes
   const appRef = useRef<Application | null>(null)
-  const spineRef = useRef<Spine | null>(null)
+  const spineRef = useRef<any | null>(null)
   const worldContainerRef = useRef<Container | null>(null)
   const dragRef = useRef({ isDragging: false, startX: 0, startY: 0, originX: 0, originY: 0 })
   const onReadyRef = useRef(onReady)
@@ -146,9 +147,9 @@ export function SpineCanvas({ skeletonData, bgColor, onReady }: SpineCanvasProps
       spineRef.current = null
     }
 
-    if (!skeletonData) return
+    if (!skeletonData || !runtimeVersion) return
 
-    const spine = new Spine(skeletonData)
+    const spine = newSpine(runtimeVersion, skeletonData)
     spineRef.current = spine
     worldContainer.addChild(spine)
 
@@ -170,15 +171,14 @@ export function SpineCanvas({ skeletonData, bgColor, onReady }: SpineCanvasProps
       setSkin: (name) => {
         const s = spineRef.current
         if (!s) return
-        s.skeleton.setSkinByName(name)
-        s.skeleton.setToSetupPose()
+        applySkin(s.skeleton, name)
       },
       setTimeScale: (scale) => {
         if (spineRef.current) spineRef.current.state.timeScale = scale
       },
       resetTransform,
     })
-  }, [skeletonData])
+  }, [skeletonData, runtimeVersion])
 
   return (
     <div

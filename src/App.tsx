@@ -4,10 +4,9 @@ import { SpineCanvas } from './components/SpineCanvas'
 import type { SpineCanvasControls } from './components/SpineCanvas'
 import { loadSpineData } from './utils/spineLoader'
 import type { SpineFiles, LoadedSpineData } from './utils/spineLoader'
-import type { SkeletonData } from '@esotericsoftware/spine-core'
 
 export default function App() {
-  const [skeletonData, setSkeletonData] = useState<SkeletonData | null>(null)
+  const [skeletonData, setSkeletonData] = useState<any | null>(null)
   const [spineInfo, setSpineInfo] = useState<LoadedSpineData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -187,8 +186,12 @@ export default function App() {
                 <span className="info-value">{spineInfo.skins.length}</span>
               </div>
               <div className="info-row">
-                <span>Version</span>
-                <span className="info-value">{spineInfo.skeletonData.version || '—'}</span>
+                <span>Editor version</span>
+                <span className="info-value">{spineInfo.fileVersion || spineInfo.skeletonData.version || '—'}</span>
+              </div>
+              <div className="info-row">
+                <span>Runtime used</span>
+                <span className="info-value">{spineInfo.runtimeVersion}.x</span>
               </div>
             </section>
           </>
@@ -198,6 +201,7 @@ export default function App() {
       <main className="canvas-area">
         <SpineCanvas
           skeletonData={skeletonData}
+          runtimeVersion={spineInfo?.runtimeVersion ?? null}
           bgColor={bgColor}
           onReady={handleCanvasReady}
         />
